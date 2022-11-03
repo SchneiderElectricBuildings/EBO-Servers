@@ -2,12 +2,12 @@
 
 # Tags
 
-<Tags go here>
+Tags go here
 
 # Description
 
-<Link to docs here>
+Link to docs here
 
 or
 
-<Include Docs Here, probably better, will test>
+Include Docs Here, probably better, will test
