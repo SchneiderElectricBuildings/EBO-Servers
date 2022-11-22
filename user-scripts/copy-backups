@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# arguments
+# $1 servername
+# $2 destination folder # needs to be writable by user/group 60606 (or other)
+
+image="artifactory.eur.gad.schneider-electric.com:8888/ubuntu:18.04"
+
+DB_VOLUME="$1-db"
+DB_FOLDER="/var/sbo"
+DEST_FOLDER=$2
+
+echo "Starting container..."
+docker run --rm --mount type=bind,source=$DEST_FOLDER,target=/mnt --mount source=$DB_VOLUME,target=$DB_FOLDER $image bash -c "cp /var/sbo/db_backup/LocalBackup/* /mnt/"

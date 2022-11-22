@@ -1,0 +1,23 @@
+#!/bin/bash
+#     https://www.youtube.com/watch?v=bKFMS5C4CG0
+
+
+# example below for 192.168.1 network with a
+# network interface named enp4s0
+# subnet and gateway should match the network on the hosts interface ($3)
+
+subnet=$1
+gateway=$2
+interface=$3
+
+#  docker network create -d ipvlan \
+#   --subnet=192.168.1.0/24 \
+#   --gateway=192.168.1.1 \
+#   -o parent=enp4s0 \
+#   bridged-net
+
+ docker network create -d ipvlan \
+  --subnet=$subnet \
+  --gateway=$gateway \
+  -o parent=$interface \
+  bridged-net

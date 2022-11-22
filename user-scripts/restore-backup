@@ -1,0 +1,55 @@
+#!/usr/bin/python3
+import sys
+import subprocess
+import shlex
+from os.path import exists, abspath, dirname, basename
+
+server_name = sys.argv[1]
+version = sys.argv[2]
+backup = sys.argv[3]
+restore_type = sys.argv[4] #AllData or ConfigurationOnly
+backup_name = basename(backup)
+
+image = f'artifactory.eur.gad.schneider-electric.com:8888/linuxcs:{version}'
+
+
+def _prepare_restore():
+    if restore_type not in ['AllData', 'ConfigurationOnly']:
+        raise Exception(f'Invalid restore_type: {restore_type}')
+
+    cmd = ['docker' , 'run', '--rm', '--mount', f'source={server_name}-db,target=/var/sbo',
+    image, '/opt/sbo/bin/prepare-restore', backup_name , restore_type]
+    subprocess.check_call(cmd)
+
+
+def _restart_server():
+    cmd = f'docker restart {server_name}'
+    subprocess.check_call(shlex.split(cmd))
+
+
+def _copy_to_volume():
+    source_folder = dirname(abspath(backup))
+    cmd = ['docker' , 'run', '--rm', '--mount', f'type=bind,source={source_folder},target=/mnt',
+    '--mount', f'source={server_name}-db,target=/var/sbo', image,
+    'bash',  '-c', f"cp '/mnt/{backup_name}' /var/sbo/db_backup/LocalBackup/"]
+    subprocess.check_call(cmd)
+
+
+def main():
+    '''
+    arguments servername version backupfile
+    This script can restore both "ConfigurationOnly" backups
+    and "AllData" (Configuration and historical)
+    Like this with just a file name the restore uses a backup file already existing on the server
+    ./restore-backup-full AS1 5.0.0.618 Server1.xbk AllData
+    Like this with a path, the backup file on the host is copied to the container for restore
+    ./restore-backup-full AS1 5.0.0.618 /home/user/Server1.xbk AllData
+
+    '''
+    if exists(backup):
+        _copy_to_volume()
+    _prepare_restore()
+    _restart_server()
+
+if __name__ == '__main__':
+    sys.exit(main())
