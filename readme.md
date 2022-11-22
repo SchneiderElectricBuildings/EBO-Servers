@@ -1,5 +1,5 @@
 # Schneider Electric EcoStruxure Building Operation
-
+sdsdfffd
 Open, flexible, data-centric. Go beyond traditional building management system functionality to create smart, future-ready buildings with EcoStruxure Building Operation. Part of the EcoStruxure Building integrated smart building platform; this open, flexible, data-centric solution provides a single control center to monitor, manage and optimize all types of buildings.
 
 To learn more, see [EcoStruxure Building](https://www.se.com/ww/en/work/products/product-launch/building-management-system/)
