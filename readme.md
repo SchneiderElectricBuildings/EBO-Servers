@@ -183,7 +183,7 @@ docker volume rm cs1-db
 ```
 If you want to play with a server without the need to talk to devices you can start it with port forwarding like this:
 ```
-docker run -d --name=cs1 -hostname=cs1 -p 1080:80 -p 1443:443 -p14444:4444 -e NSP_ACCEPT_EULA=Yes artifactory.eur.gad.schneider-electric.com:8888/linuxcs:5.0.0.1220
+docker run -d --name=cs1 -hostname=cs1 -p 1080:80 -p 1443:443 -p14444:4444 -e NSP_ACCEPT_EULA=Yes ghcr.io/schneiderelectricbuildings/ebo-edge-server:5.0.0.1220
 ```
 In this example you can connect to it on:
 https://localhost:1443
