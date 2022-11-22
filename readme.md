@@ -4,6 +4,8 @@ Open, flexible, data-centric. Go beyond traditional building management system f
 
 To learn more, see [EcoStruxure Building](https://www.se.com/ww/en/work/products/product-launch/building-management-system/)
 
+**This is a BETA build**
+
 EcoStruxure Building Operation Edge Server is subject to commercial licensing. Contact your local [Schneider Electric representative](https://www.se.com/ww/en/work/support/country-selector/distributors.jsp) for more information.
 ## How to use this image
 You can logon to a container without licenses, but to get communication and runtime capabilities you need licenses: \<license instruction goes here>
