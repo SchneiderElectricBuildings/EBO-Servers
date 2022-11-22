@@ -38,7 +38,7 @@ def run():
     crash_folder = args.crashes_folder
     ca_folder = args.ca_folder
     dns = args.dns
-    image = f'artifactory.eur.gad.schneider-electric.com:8888/linuxcs:{version}'
+    image = f'ghcr.io/schneiderelectricbuildings/ebo-edge-server:{version}'
     db_vol = f'{name}-db'
     db_folder = '/var/sbo'
 
