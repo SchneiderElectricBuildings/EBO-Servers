@@ -51,7 +51,7 @@ def run():
         f'--ip {ip} ' \
         f'--mount source={db_vol},target={db_folder} '
     if ca_folder:
-        cmd += f'--mount source={ca_folder},target=/usr/local/share/ca-certificates {image} '
+        cmd += f'--mount type=bind,source={ca_folder},target=/usr/local/share/ca-certificates '
     if dns:
         cmd += f'--dns {dns} '
     cmd += image

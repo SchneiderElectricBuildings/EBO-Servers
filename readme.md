@@ -4,11 +4,9 @@ Open, flexible, data-centric. Go beyond traditional building management system f
 
 To learn more, see [EcoStruxure Building](https://www.se.com/ww/en/work/products/product-launch/building-management-system/)
 
-**This is a BETA build**
-
 EcoStruxure Building Operation Edge Server is subject to commercial licensing. Contact your local [Schneider Electric representative](https://www.se.com/ww/en/work/support/country-selector/distributors.jsp) for more information.
 ## How to use this image
-You can logon to a container without licenses, but to get communication and runtime capabilities you need licenses: \<license instruction goes here>
+For full functionality, valid and activated licenses are required. See official Building Operation documentation for more information.
 
 To manage the containers we do provide a few docker scripts to use as is or to draw inspiration from:
 [user-scripts](./user-scripts)
@@ -58,7 +56,7 @@ ip ad
 
 Then you need to have a free IP address in that subnet to set as a static address for your container.
 
-### Eula
+### EULA
 The End-User License Agrement (EULA) must be accepted before the server can start.  
     The license terms for this product can be downloaded here: [EULA](https://ecostruxure-building-help.se.com/bms/Topics/Show.castle?id=14865)
 
