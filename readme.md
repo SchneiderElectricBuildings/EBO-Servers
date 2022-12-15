@@ -112,6 +112,7 @@ To install CA certificates in the container, you can either mount a host folder 
 --ca-folder=/home/user/ca-certificates
 ```
 Or you could build your own image on top of our image with the certificates added to: /usr/local/share/ca-certificates.
+The CA certificates must have a .crt extension.
 .
 
 
@@ -137,10 +138,16 @@ at the end of this file add:
 kernel.core_pattern = /var/crash/%t.%e.h%h.P%P.s%s.g%g.u%u.core
 ```
 
-The host also need to allow crash dumps, like this:
+The host also need to allow crash dumps, like this, then restart the host:
 ```
-ulimit -c unlimited
+sudo nano /etc/security/limits.conf
+# add these lines at the end
+* soft core unlimited
+* hard core unlimited
 ```
+The container will look for dump files in /var/crash from the core_pattern above. That folder used must be writable by other or by the user/group 60606 used by the container.
+Working DNS is also a prerequisite for the container to be able to send the crash information to Schneider Electric, see below.
+
 
 ## DNS
 If your container can't reach the dns setup on your host, for example because of VPN. There are an optional parameter to the start script:

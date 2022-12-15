@@ -21,8 +21,6 @@ def get_arguments(description):
      start you need to accept eula.
     To accept use: --accept-eula=Yes
     You get link to eula if you start without 'Yes' and check with docker logs''', )
-    parser.add_argument('--crashes-folder', default='/var/crash', help='folder shared ' \
-        'between containers that stores crash dumps')
     parser.add_argument('--ca-folder', default=None, help='folder where ' \
         'containers get their ca certificates')
     parser.add_argument('--dns', default=None, help="optional dns server" \
@@ -35,7 +33,6 @@ def run():
     version = args.version
     ip = args.ip
     accept_eula = args.accept_eula
-    crash_folder = args.crashes_folder
     ca_folder = args.ca_folder
     dns = args.dns
     image = f'ghcr.io/schneiderelectricbuildings/ebo-edge-server:{version}'
@@ -46,7 +43,7 @@ def run():
         '--ulimit core=-1 ' \
         '--restart always ' \
         '--network bridged-net ' \
-        f'--mount type=bind,source={crash_folder},target=/var/crash ' \
+        f'--mount type=bind,source=/var/crash,target=/var/crash ' \
         f'-e NSP_ACCEPT_EULA="{accept_eula}" ' \
         f'--ip {ip} ' \
         f'--mount source={db_vol},target={db_folder} '
