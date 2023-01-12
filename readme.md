@@ -155,6 +155,16 @@ If your container can't reach the dns setup on your host, for example because of
 --dns=<some IP for a public dns>
 ```
 
+## Set server in Password Reset Mode
+
+To set server in Password Reset Mode, run the script with name and version as arguments.
+
+
+
+```
+./password-reset-mode cs3 5.0.1.128
+```
+
 ## A few useful docker commands
 If you have started a server named cs1.
 Show log:
