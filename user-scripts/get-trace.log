@@ -4,7 +4,7 @@
 # $1 servername
 # $2 destination folder # needs to be writable by root (or other)
 
-image="artifactory.eur.gad.schneider-electric.com:8888/ubuntu:focal-20220531"
+image="ubuntu:focal"
 
 DB_VOLUME="$1-db"
 DB_FOLDER="/var/sbo"
