@@ -3,7 +3,7 @@
 # arguments
 # $1 servername
 
-image="ubuntu:focal"
+image="artifactory.eur.gad.schneider-electric.com:8888/ubuntu:focal-20220531"
 
 DB_VOLUME="$1-db"
 DB_FOLDER="/var/sbo"

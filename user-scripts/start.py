@@ -35,7 +35,7 @@ def run():
     accept_eula = args.accept_eula
     ca_folder = args.ca_folder
     dns = args.dns
-    image = f'ghcr.io/schneiderelectricbuildings/ebo-edge-server:{version}'
+    image = f'artifactory.eur.gad.schneider-electric.com:8888/ebo/ebo-edge-server:{version}'
     db_vol = f'{name}-db'
     db_folder = '/var/sbo'
 
