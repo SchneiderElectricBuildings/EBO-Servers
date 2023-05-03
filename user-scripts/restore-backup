@@ -10,7 +10,7 @@ backup = sys.argv[3]
 restore_type = sys.argv[4] #AllData or ConfigurationOnly
 backup_name = basename(backup)
 
-image = f'artifactory.eur.gad.schneider-electric.com:8888/ebo/ebo-edge-server:{version}'
+image = f'ghcr.io/schneiderelectricbuildings/ebo-edge-server:{version}'
 
 
 def _prepare_restore():
