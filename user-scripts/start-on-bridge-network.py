@@ -30,16 +30,14 @@ def run():
     args = get_arguments('start EBO CS container.')
     name = args.name
     version = args.version
-    ip = args.ip
     accept_eula = args.accept_eula
-    network = args.network
     ca_folder = args.ca_folder
     dns = args.dns
     image = f'ghcr.io/schneiderelectricbuildings/ebo-edge-server:{version}'
     db_vol = f'{name}-db'
     db_folder = '/var/sbo'
 
-    cmd = f'docker run -d --p 443:443 -p 80:80 -p 4444:4444 -name={name} -h {name} ' \
+    cmd = f'docker run -d -p 443:443 -p 80:80 -p 4444:4444 --name={name} -h {name} ' \
         '--ulimit core=-1 ' \
         '--restart always ' \
         f'--network bridge ' \
