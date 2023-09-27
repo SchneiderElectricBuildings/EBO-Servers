@@ -159,7 +159,7 @@ If your container can't reach the dns setup on your host, for example because of
 
 To set server in Password Reset Mode, run the script with name and version as arguments.
 
-
+ 
 
 ```
 ./password-reset-mode cs3 5.0.1.128

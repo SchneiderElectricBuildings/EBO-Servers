@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 import subprocess
-import shlex
 import sys
-import time
 from start import get_arguments, exe
 
 
