@@ -2,6 +2,7 @@
 import argparse
 import subprocess
 import shlex
+import socket
 
 def exe(cmd):
     try:
@@ -17,6 +18,8 @@ def get_arguments(description):
     parser.add_argument('--name', '-n', required=True, help='name of the container')
     parser.add_argument('--version', '-v', required=True, help='version of server to start')
     parser.add_argument('--ip', '-i', required=True, help='ip address of the container')
+    parser.add_argument('--graphdb', '-g', required=False, default=f'', help='the url to reach GraphDB')
+    parser.add_argument('--type', '-t', required=False, default='ebo-edge-server', help='type of server, defaults to ebo-edge-server, other values are: ebo-enterprise-server or ebo-enterprise-central')
     parser.add_argument('--accept-eula', required=True, help='''for the server to
      start you need to accept eula.
     To accept use: --accept-eula=Yes
@@ -34,8 +37,10 @@ def run():
     ip = args.ip
     accept_eula = args.accept_eula
     ca_folder = args.ca_folder
+    graphdb = args.graphdb
+    server_type = args.type
     dns = args.dns
-    image = f'ghcr.io/schneiderelectricbuildings/ebo-edge-server:{version}'
+    image = f'artifactory.eur.gad.schneider-electric.com:8888/ebo/{server_type}:{version}'
     db_vol = f'{name}-db'
     db_folder = '/var/sbo'
 
@@ -45,6 +50,7 @@ def run():
         '--network bridged-net ' \
         f'--mount type=bind,source=/var/crash,target=/var/crash ' \
         f'-e NSP_ACCEPT_EULA="{accept_eula}" ' \
+        f'-e Semantic_Db_URL="{graphdb}" ' \
         f'--ip {ip} ' \
         f'--mount source={db_vol},target={db_folder} '
     if ca_folder:
