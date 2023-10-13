@@ -40,7 +40,7 @@ def run():
     graphdb = args.graphdb
     server_type = args.type
     dns = args.dns
-    image = f'artifactory.eur.gad.schneider-electric.com:8888/ebo/{server_type}:{version}'
+    image = f'ghcr.io/schneiderelectricbuildings/{server_type}:{version}'
     db_vol = f'{name}-db'
     db_folder = '/var/sbo'
 
