@@ -24,6 +24,7 @@ def get_arguments(description):
      start you need to accept eula.
     To accept use: --accept-eula=Yes
     You get link to eula if you start without 'Yes' and check with docker logs''', )
+    parser.add_argument('--network', default='bridged-net', help='network name')
     parser.add_argument('--ca-folder', default=None, help='folder where ' \
         'containers get their ca certificates')
     parser.add_argument('--dns', default=None, help="optional dns server" \
@@ -42,6 +43,7 @@ def run():
     version = args.version
     ip = args.ip
     accept_eula = args.accept_eula
+    network = args.network
     ca_folder = args.ca_folder
     graphdb = args.graphdb
     server_type = args.type
@@ -78,7 +80,7 @@ def run():
     cmd = f'docker run -d --name={name} -h {name} ' \
         '--ulimit core=-1 ' \
         '--restart always ' \
-        '--network bridged-net ' \
+        f'--network {network} ' \
         f'--mount type=bind,source=/var/crash,target=/var/crash ' \
         f'-e NSP_ACCEPT_EULA="{accept_eula}" ' \
         f'-e Semantic_Db_URL="{graphdb}" ' \
