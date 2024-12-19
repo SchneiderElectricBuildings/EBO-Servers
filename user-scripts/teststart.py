@@ -50,6 +50,7 @@ def run():
     https_proxy=args.https_proxy
     no_proxy=args.no_proxy
     image = f'ghcr.io/schneiderelectricbuildings/{server_type}:{version}'
+#    image = 'nsp'
     db_vol = f'{name}-db'
     db_folder = '/var/sbo'
     proxy = ''
@@ -77,9 +78,7 @@ def run():
 
     cmd = f'docker run -d --name={name} -h {name} ' \
         '--ulimit core=-1 ' \
-        '--restart always ' \
         '--network bridged-net ' \
-        f'--mount type=bind,source=/var/crash,target=/var/crash ' \
         f'-e NSP_ACCEPT_EULA="{accept_eula}" ' \
         f'-e Semantic_Db_URL="{graphdb}" ' \
         f'{proxy}'\
