@@ -11,4 +11,4 @@ DB_FOLDER="/var/sbo"
 DEST_FOLDER=$2
 
 echo "Starting container..."
-docker run --rm --mount type=bind,source=$DEST_FOLDER,target=/mnt --mount source=$DB_VOLUME,target=$DB_FOLDER $image bash -c "cp /var/sbo/db_backup/LocalBackup/* /mnt/ && [ -d /var/sbo/db_backup/ASArchives/* ] && cp -R /var/sbo/db_backup/ASArchives/* /mnt/"
+docker run --rm --mount type=bind,source=$DEST_FOLDER,target=/mnt --mount source=$DB_VOLUME,target=$DB_FOLDER $image bash -c "cp /var/sbo/db_backup/LocalBackup/* /mnt/"
