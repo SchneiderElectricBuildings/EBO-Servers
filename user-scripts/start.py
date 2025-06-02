@@ -2,7 +2,7 @@
 import argparse
 import subprocess
 import shlex
-import socket
+import os
 
 def exe(cmd):
     try:
@@ -28,6 +28,12 @@ def get_arguments(description):
         'containers get their ca certificates')
     parser.add_argument('--dns', default=None, help="optional dns server" \
         "address for when container can't reach host dns, because of, for example, VPN")
+    parser.add_argument('--http-proxy', default=None, help="optional http proxy " \
+        "if not given the host environment variables http_proxy or HTTP_PROXY will be used ")
+    parser.add_argument('--https-proxy', default=None, help="optional https proxy " \
+        "if not given the host environment variables https_proxy or HTTPS_PROXY will be used ")
+    parser.add_argument('--no-proxy', default=None, help="optional no proxy " \
+        "if not given the host environment variables no_proxy or NO_PROXY will be used ")
     return parser.parse_args()
 
 def run():
@@ -40,9 +46,34 @@ def run():
     graphdb = args.graphdb
     server_type = args.type
     dns = args.dns
+    http_proxy=args.http_proxy
+    https_proxy=args.https_proxy
+    no_proxy=args.no_proxy
     image = f'ghcr.io/schneiderelectricbuildings/{server_type}:{version}'
     db_vol = f'{name}-db'
     db_folder = '/var/sbo'
+    proxy = ''
+    if http_proxy:
+        proxy += f'-e http_proxy={http_proxy} '
+    else:
+        if "http_proxy" in os.environ:
+            proxy += f'-e http_proxy={os.environ["http_proxy"]} '
+        if "HTTP_PROXY" in os.environ:
+            proxy += f'-e HTTP_PROXY={os.environ["HTTP_PROXY"]} '
+    if https_proxy:
+        proxy += f'-e https_proxy={https_proxy} '
+    else:
+        if "https_proxy" in os.environ:
+            proxy += f'-e https_proxy={os.environ["https_proxy"]} '
+        if "HTTPS_PROXY" in os.environ:
+            proxy += f'-e HTTPS_PROXY={os.environ["HTTPS_PROXY"]} '
+    if no_proxy:
+        proxy += f'-e no_proxy={no_proxy} '
+    else:
+        if "no_proxy" in os.environ:
+            proxy += f'-e no_proxy={os.environ["no_proxy"]} '
+        if "NO_PROXY" in os.environ:
+            proxy += f'-e NO_PROXY={os.environ["NO_PROXY"]} '
 
     cmd = f'docker run -d --name={name} -h {name} ' \
         '--ulimit core=-1 ' \
@@ -51,6 +82,7 @@ def run():
         f'--mount type=bind,source=/var/crash,target=/var/crash ' \
         f'-e NSP_ACCEPT_EULA="{accept_eula}" ' \
         f'-e Semantic_Db_URL="{graphdb}" ' \
+        f'{proxy}'\
         f'--ip {ip} ' \
         f'--mount source={db_vol},target={db_folder} '
     if ca_folder:
