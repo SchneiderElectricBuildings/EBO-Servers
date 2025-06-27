@@ -65,19 +65,17 @@ The End-User License Agrement (EULA) must be accepted before the server can star
 
 Then to start your server:
 ```
-./start.py --name=cs3 --version=5.0.0.1082 --ip=192.168.1.3 --type=ebo-edge-server --accept-eula=Yes
+./start.py --name=cs3 --version=5.0.0.1082 --ip=192.168.1.3 --accept-eula=Yes
 ```
 You can interact with the server via your browser: https://192.168.1.3/.  
 Initial user name: admin, password: admin  
-The version and IP are only examples.  
-By default the server type is an Edge Server.
-To start an Enterprise Server or Enterprise Central instead. add --type=ebo-enterprise-server or --type=ebo-enterprise-central
+The version and IP are only examples
 
 ### Upgrade
 To upgrade the server, use the same parameters as for start, but with the new version.
 
 ```
-./upgrade.py --name=cs3 --version=5.0.0.1090 --ip=192.168.1.3 --type=ebo-edge-server --accept-eula=Yes
+./upgrade.py --name=cs3 --version=5.0.0.1090 --ip=192.168.1.3 --accept-eula=Yes
 ```
 The version and IP are only examples
 ### Backup management
@@ -116,18 +114,12 @@ To install CA certificates in the container, you can either mount a host folder 
 Or you could build your own image on top of our image with the certificates added to: /usr/local/share/ca-certificates.
 The CA certificates must have a .crt extension.
 .
-## Proxy
-The script start.py (and upgrade.py) will pick up the the proxy environment variables from the host and pass them on to the container. If you want to use other settings you can supply them with these parameters:  
---http-proxy  
---https-proxy  
---no-proxy  
-The environment varibles are, http_proxy, https_proxy and no_proxy in both lower and upper case.
 
 
 ## In case of crash
 You can enable the container to send crash dumps to Schneider Electric, by setting the kernel core pattern of the host to:
 ```
-sudo sysctl -w kernel.core_pattern=/var/crash/%t.%E.h%h.P%P.s%s.g%g.u%u.core
+sudo sysctl -w kernel.core_pattern=/var/crash/%t.%e.h%h.P%P.s%s.g%g.u%u.core
 ```
 Apport wants to set the default pattern so to persist the core pattern, you need to disable apport.
 ```
@@ -143,7 +135,7 @@ To set the core pattern at boot:
 ```
 at the end of this file add:
 ```
-kernel.core_pattern = /var/crash/%t.%E.h%h.P%P.s%s.g%g.u%u.core
+kernel.core_pattern = /var/crash/%t.%e.h%h.P%P.s%s.g%g.u%u.core
 ```
 
 The host also need to allow crash dumps, like this, then restart the host:
@@ -214,23 +206,3 @@ The http-port is 1080 on the host machine.
 The tcp-port is 14444 on the host machine.
 It runs the example version 5.0.0.1220.
 It is namned cs1.
-
-## GraphDB
-For containers we use the standard GraphDB from https://hub.docker.com/r/ontotext/graphdb/ to get a license contact https://www.ontotext.com/.
-For test you can run it without a license in free mode.
-You need to have a free IP address in that subnet to set as a static address for your container.
-
-If you use semantics, then you start GraphDB like this:
-```
-./start-graphdb 192.168.1.6
-```
-The IP is just an example.
-When it has been started, access it at (for this example) http://192.168.1.6:7200.
-Create a new GraphDB repository with id "nsp". Also choose to enable context index.
-If you then start your ebo-enterprise-server or ebo-enterprise-central with:
-```
---graphdb=http://192.168.1.6:7200
-```
-The server will connect to this instance and upload the ontologies to GrapDB.
-You could also manually set the url in the servers Semantic settings and right click on semantics to upload the ontologies. When the ontologies are uploaded you need to relogin to WorkStation to enable the semantic functionality.
-
