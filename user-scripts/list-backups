@@ -8,4 +8,4 @@ image="ubuntu:focal"
 DB_VOLUME="$1-db"
 DB_FOLDER="/var/sbo"
 
-docker run --rm --mount source=$DB_VOLUME,target=$DB_FOLDER $image ls /var/sbo/db_backup/LocalBackup
+docker run --rm --mount source=$DB_VOLUME,target=$DB_FOLDER $image /bin/bash -c "ls /var/sbo/db_backup/LocalBackup; [ -d /var/sbo/db_backup/ASArchives/* ] && ls /var/sbo/db_backup/ASArchives/*;"
