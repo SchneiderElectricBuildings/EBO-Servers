@@ -116,6 +116,12 @@ To install CA certificates in the container, you can either mount a host folder 
 Or you could build your own image on top of our image with the certificates added to: /usr/local/share/ca-certificates.
 The CA certificates must have a .crt extension.
 .
+## Proxy
+The script start.py (and upgrade.py) will pick up the the proxy environment variables from the host and pass them on to the container. If you want to use other settings you can supply them with these parameters:  
+--http-proxy  
+--https-proxy  
+--no-proxy  
+The environment varibles are, http_proxy, https_proxy and no_proxy in both lower and upper case.
 
 
 ## In case of crash
