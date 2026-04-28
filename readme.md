@@ -8,8 +8,11 @@ EcoStruxure Building Operation Edge Server is subject to commercial licensing. C
 ## How to use this image
 For full functionality, valid and activated licenses are required. See official Building Operation documentation for more information.
 
-To manage the containers we do provide a few docker scripts to use as is or to draw inspiration from:
+To manage the containers we do provide a few docker scripts to use as is or to draw inspiration from. :
 [user-scripts](./user-scripts)
+
+> [!IMPORTANT]
+> These scripts are provided as is and are intended as examples of how to configure and run the container using a local docker environment and are not intended to be used in a production environment, users are responsible for ensuring these images are deployed in a secure manner to their container runtime environment. Schneider Electric takes no responsibility for usage that might lead to potential stability or security implications
 
 ### Network
 We recommend that you use this container with an IPvlan network. This to give the container its own IP address on the local network for simple communication with for example BACnet devices on the same network.
