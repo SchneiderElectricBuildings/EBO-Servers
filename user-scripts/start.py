@@ -1,16 +1,26 @@
 #!/usr/bin/python3
 import argparse
 import subprocess
-import shlex
 import os
 
 def exe(cmd):
     try:
         print('running:', cmd)
-        return subprocess.check_output(shlex.split(cmd)).decode('utf-8').strip()
+        return subprocess.check_output(cmd).decode('utf-8').strip()
     except Exception as e:
         print('Exception', e)
         raise
+
+
+def _validate_arg(value, name):
+    """Reject values that contain whitespace or shell metacharacters to prevent argument injection."""
+    if not value:
+        return value
+    # Allow only alphanumeric, dots, hyphens, underscores, colons, slashes, and equals
+    import re
+    if not re.fullmatch(r'[A-Za-z0-9._:/@=\-]+', value):
+        raise ValueError(f"Invalid characters in {name}: {value!r}")
+    return value
 
 
 def get_arguments(description):
@@ -75,23 +85,59 @@ def run():
         if "NO_PROXY" in os.environ:
             proxy += f'-e NO_PROXY={os.environ["NO_PROXY"]} '
 
-    cmd = f'docker run -d --name={name} -h {name} ' \
-        '--ulimit core=-1 ' \
-        '--restart always ' \
-        '--network bridged-net ' \
-        f'-e NSP_ACCEPT_EULA="{accept_eula}" ' \
-        f'-e Semantic_Db_URL="{graphdb}" ' \
-        f'{proxy}'\
-        f'--ip {ip} ' \
-        f'--mount source={db_vol},target={db_folder} '
+        # Validate all user-supplied values to prevent Docker argument injection
+    _validate_arg(name, '--name')
+    _validate_arg(version, '--version')
+    _validate_arg(ip, '--ip')
+    _validate_arg(server_type, '--type')
+    _validate_arg(accept_eula, '--accept-eula')
+    _validate_arg(graphdb, '--graphdb')
+    _validate_arg(ca_folder, '--ca-folder')
+    _validate_arg(dns, '--dns')
+
+    cmd = [
+        'docker', 'run', '-d',
+        f'--name={name}',
+        '-h', name,
+        '--ulimit', 'core=-1',
+        '--restart', 'always',
+        '--network', 'bridged-net',
+        '-e', f'NSP_ACCEPT_EULA={accept_eula}',
+        '-e', f'Semantic_Db_URL={graphdb}',
+    ]
+    if http_proxy:
+        cmd += ['-e', f'http_proxy={http_proxy}']
+    else:
+        if "http_proxy" in os.environ:
+            cmd += ['-e', f'http_proxy={os.environ["http_proxy"]}']
+        if "HTTP_PROXY" in os.environ:
+            cmd += ['-e', f'HTTP_PROXY={os.environ["HTTP_PROXY"]}']
+    if https_proxy:
+        cmd += ['-e', f'https_proxy={https_proxy}']
+    else:
+        if "https_proxy" in os.environ:
+            cmd += ['-e', f'https_proxy={os.environ["https_proxy"]}']
+        if "HTTPS_PROXY" in os.environ:
+            cmd += ['-e', f'HTTPS_PROXY={os.environ["HTTPS_PROXY"]}']
+    if no_proxy:
+        cmd += ['-e', f'no_proxy={no_proxy}']
+    else:
+        if "no_proxy" in os.environ:
+            cmd += ['-e', f'no_proxy={os.environ["no_proxy"]}']
+        if "NO_PROXY" in os.environ:
+            cmd += ['-e', f'NO_PROXY={os.environ["NO_PROXY"]}']
+    cmd += [
+        '--ip', ip,
+        '--mount', f'source={db_vol},target={db_folder}',
+    ]
     if ca_folder:
-        cmd += f'--mount type=bind,source={ca_folder},target=/usr/local/share/ca-certificates '
+        cmd += ['--mount', f'type=bind,source={ca_folder},target=/usr/local/share/ca-certificates']
     dump_path = '/var/crash'
     if os.path.exists(dump_path):
-        cmd += f'--mount type=bind,source={dump_path},target={dump_path} '
+        cmd += ['--mount', f'type=bind,source={dump_path},target={dump_path}']
     if dns:
-        cmd += f'--dns {dns} '
-    cmd += image
+        cmd += ['--dns', dns]
+    cmd.append(image)
     exe(cmd)
 
 if __name__ == '__main__':

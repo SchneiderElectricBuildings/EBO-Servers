@@ -153,7 +153,7 @@ sudo nano /etc/security/limits.conf
 * soft core unlimited
 * hard core unlimited
 ```
-The container will look for dump files in /var/crash from the core_pattern above. That folder used must be writable by other or by the user/group 60606 used by the container.
+The container will look for dump files in /var/crash from the core_pattern above. Create the folder if it does not exist. That folder used must be writable by other or by the user/group 60606 used by the container.
 Working DNS is also a prerequisite for the container to be able to send the crash information to Schneider Electric, see below.
 
 
