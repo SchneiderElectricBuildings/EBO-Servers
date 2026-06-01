@@ -2,6 +2,7 @@
 import argparse
 import subprocess
 import os
+import re
 
 def exe(cmd):
     try:
@@ -17,10 +18,17 @@ def _validate_arg(value, name):
     if not value:
         return value
     # Allow only alphanumeric, dots, hyphens, underscores, colons, slashes, and equals
-    import re
     if not re.fullmatch(r'[A-Za-z0-9._:/@=\-]+', value):
         raise ValueError(f"Invalid characters in {name}: {value!r}")
     return value
+
+
+def _is_legacy_ca_folder_version(version):
+    """Return True for versions below 8.x where --ca-folder is still required."""
+    match = re.match(r'^\s*(\d+)', version or '')
+    if not match:
+        return False
+    return int(match.group(1)) < 8
 
 
 def get_arguments(description):
@@ -34,8 +42,12 @@ def get_arguments(description):
      start you need to accept eula.
     To accept use: --accept-eula=Yes
     You get link to eula if you start without 'Yes' and check with docker logs''', )
-    parser.add_argument('--ca-folder', default=None, help='folder where ' \
-        'containers get their ca certificates')
+    parser.add_argument('--ca-bundle', default=None, help='path to a PEM file ' \
+        'containing CA certificates to trust. Bind-mounted read-only into the ' \
+        'container at /opt/sbo/etc/ca-bundle.crt, replacing the default Mozilla ' \
+        'bundle. Must include any roots needed for both public and corporate TLS.')
+    parser.add_argument('--ca-folder', default=None, help='DEPRECATED: use ' \
+        '--ca-bundle with a single PEM file instead.')
     parser.add_argument('--dns', default=None, help="optional dns server" \
         "address for when container can't reach host dns, because of, for example, VPN")
     parser.add_argument('--http-proxy', default=None, help="optional http proxy " \
@@ -52,7 +64,22 @@ def run():
     version = args.version
     ip = args.ip
     accept_eula = args.accept_eula
+    ca_bundle = args.ca_bundle
     ca_folder = args.ca_folder
+    use_legacy_ca_folder = _is_legacy_ca_folder_version(version)
+    if use_legacy_ca_folder and ca_bundle:
+        raise SystemExit(
+            "--ca-bundle is only supported for server version 8.0 and newer. "
+            "For Ubuntu, the default CA bundle path is /etc/ssl/certs/ca-certificates.crt. "
+            "For this version, use --ca-folder instead."
+        )
+    if not use_legacy_ca_folder and ca_folder:
+        raise SystemExit(
+            "--ca-folder is no longer supported for server version 8.0 and newer. "
+            "Concatenate your CA certificates (including Mozilla roots) into "
+            "a single PEM file and pass it via --ca-bundle, for example "
+            "/etc/ssl/certs/ca-certificates.crt on Ubuntu."
+        )
     graphdb = args.graphdb
     server_type = args.type
     dns = args.dns
@@ -92,8 +119,11 @@ def run():
     _validate_arg(server_type, '--type')
     _validate_arg(accept_eula, '--accept-eula')
     _validate_arg(graphdb, '--graphdb')
-    _validate_arg(ca_folder, '--ca-folder')
     _validate_arg(dns, '--dns')
+    if use_legacy_ca_folder:
+        _validate_arg(ca_folder, '--ca-folder')
+    else:
+        _validate_arg(ca_bundle, '--ca-bundle')
 
     cmd = [
         'docker', 'run', '-d',
@@ -130,8 +160,10 @@ def run():
         '--ip', ip,
         '--mount', f'source={db_vol},target={db_folder}',
     ]
-    if ca_folder:
+    if use_legacy_ca_folder and ca_folder:
         cmd += ['--mount', f'type=bind,source={ca_folder},target=/usr/local/share/ca-certificates']
+    if not use_legacy_ca_folder and ca_bundle:
+        cmd += ['--mount', f'type=bind,source={ca_bundle},target=/opt/sbo/etc/ca-bundle.crt,readonly']
     dump_path = '/var/crash'
     if os.path.exists(dump_path):
         cmd += ['--mount', f'type=bind,source={dump_path},target={dump_path}']
