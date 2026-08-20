@@ -11,11 +11,6 @@ For full functionality, valid and activated licenses are required. See official 
 To manage the containers we do provide a few docker scripts to use as is or to draw inspiration from:
 [user-scripts](./user-scripts)
 
-
-> [!IMPORTANT]
-> These scripts are provided as is and are intended as examples of how to configure and run the container using a local docker environment and are not intended to be used in a production environment, users are responsible for ensuring these images are deployed in a secure manner to their container runtime environment. Schneider Electric takes no responsibility for usage that might lead to potential stability or security implications
-
-
 ### Network
 We recommend that you use this container with an IPvlan network. This to give the container its own IP address on the local network for simple communication with for example BACnet devices on the same network.
 
@@ -166,7 +161,7 @@ sudo nano /etc/security/limits.conf
 * soft core unlimited
 * hard core unlimited
 ```
-The container will look for dump files in /var/crash from the core_pattern above. Create the folder if it does not exist. That folder used must be writable by other or by the user/group 60606 used by the container.
+The container will look for dump files in /var/crash from the core_pattern above. That folder used must be writable by other or by the user/group 60606 used by the container.
 Working DNS is also a prerequisite for the container to be able to send the crash information to Schneider Electric, see below.
 
 
