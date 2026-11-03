@@ -31,7 +31,7 @@ def _copy_to_volume():
     source_folder = dirname(abspath(backup))
     cmd = ['docker' , 'run', '--rm', '--mount', f'type=bind,source={source_folder},target=/mnt',
     '--mount', f'source={server_name}-db,target=/var/sbo', image,
-    'bash',  '-c', f"cp '/mnt/{backup_name}' /var/sbo/db_backup/LocalBackup/"]
+    'bash',  '-c', f"cp /mnt/{shlex.quote(backup_name)} /var/sbo/db_backup/LocalBackup/"]
     subprocess.check_call(cmd)
 
 
