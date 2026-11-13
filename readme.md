@@ -11,11 +11,6 @@ For full functionality, valid and activated licenses are required. See official 
 To manage the containers we do provide a few docker scripts to use as is or to draw inspiration from:
 [user-scripts](./user-scripts)
 
-
-> [!IMPORTANT]
-> These scripts are provided as is and are intended as examples of how to configure and run the container using a local docker environment and are not intended to be used in a production environment, users are responsible for ensuring these images are deployed in a secure manner to their container runtime environment. Schneider Electric takes no responsibility for usage that might lead to potential stability or security implications
-
-
 ### Network
 We recommend that you use this container with an IPvlan network. This to give the container its own IP address on the local network for simple communication with for example BACnet devices on the same network.
 
@@ -219,7 +214,7 @@ docker volume rm cs1-db
 ```
 If you want to play with a server without the need to talk to devices you can start it with port forwarding like this:
 ```
-docker run -d --name=cs1 -hostname=cs1 -p 1080:80 -p 1443:443 -p14444:4444 -e NSP_ACCEPT_EULA=Yes ghcr.io/schneiderelectricbuildings/ebo-edge-server:5.0.0.1220
+docker run -d --name=cs1 -hostname=cs1 -p 1080:80 -p 1443:443 -p14444:4444 -e NSP_ACCEPT_EULA=Yes artifactory.eur.gad.schneider-electric.com:8888/linuxcs:5.0.0.1220
 ```
 In this example you can connect to it on:
 https://localhost:1443

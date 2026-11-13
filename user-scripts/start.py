@@ -130,6 +130,7 @@ def run():
         f'--name={name}',
         '-h', name,
         '--ulimit', 'core=-1',
+        '--ulimit', 'nofile=8192:8192',
         '--restart', 'always',
         '--network', 'bridged-net',
         '-e', f'NSP_ACCEPT_EULA={accept_eula}',
